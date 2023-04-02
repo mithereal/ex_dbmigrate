@@ -63,7 +63,8 @@ defmodule ExDbmigrate.MixProject do
       {:credo, "~> 0.9.1", only: [:dev, :test], runtime: false},
       {:postgrex, ">= 0.0.0"},
       {:ecto, "~> 3.5"},
-      {:ecto_sql, "~> 3.5"}
+      {:ecto_sql, "~> 3.5"},
+      {:phoenix, "~> 1.7"}
     ]
   end
 end

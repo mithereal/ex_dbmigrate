@@ -30,7 +30,7 @@ defmodule ExDbmigrate do
 
     Enum.map(results.rows, fn r ->
       fetch_table_data(r)
-      |> generate_migration_command(r, command)
+      |> generate_schemas_command(r, command)
     end)
   end
 
@@ -43,7 +43,7 @@ WHERE table_schema = 'public'
     Ecto.Adapters.SQL.query!(@repo, query, [])
   end
 
-  def generate_migration_command(data, migration_name, command) do
+  def generate_schemas_command(data, [migration_name], command) do
     migration_string =
       data.rows
       |> Enum.map(fn [id, _is_null, type, _position, _max_length] ->
@@ -52,15 +52,19 @@ WHERE table_schema = 'public'
       end)
       |> Enum.join(" ")
 
+    ucase_migration_name = String.split(migration_name, "_") |> Enum.map(fn x -> String.capitalize(x) end) |> Enum.join("")
+
     case command do
-      true -> "mix ecto.gen.migration #{migration_name} #{migration_string}"
-      false -> "ecto.gen.migration #{migration_name} #{migration_string}"
+      true -> "mix phx.gen.schema #{ucase_migration_name} #{migration_name} #{migration_string}"
+      false -> "phx.gen.schema #{ucase_migration_name} #{migration_name} #{migration_string}"
     end
   end
 
   defp type_select(t) do
     case(t) do
       "character varying" -> "string"
+      "timestamp without time zone" -> "naive_datetime"
+      "timestamp with time zone" -> "utc_datetime"
       "USER-DEFINED" -> "any"
       data -> data
     end
