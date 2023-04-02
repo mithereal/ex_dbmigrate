@@ -1,4 +1,4 @@
-defmodule Mix.Tasks.Generate.Migrations do
+defmodule Mix.Tasks.ExDbmigrate.Gen.Html do
   use Mix.Task
 
   @moduledoc """
@@ -9,7 +9,7 @@ defmodule Mix.Tasks.Generate.Migrations do
   def run(_args) do
     {:ok, _} = Application.ensure_all_started(:ex_dbmigrate)
     Mix.shell().info("ExDbmigrate v#{Application.spec(:ex_dbmigrate, :vsn)}")
-    ExDbmigrate.generate() |> Enum.map(fn x ->
-      System.cmd("mix", x) end)
+    ExDbmigrate.html() |> Enum.map(fn x ->
+      IO.inspect(x) end)
   end
 end

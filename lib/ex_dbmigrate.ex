@@ -6,32 +6,82 @@ defmodule ExDbmigrate do
   @repo ExDbmigrate.Config.repo()
 
   @doc """
-  Generate migration from config.
+  Generate schema from config.
 
   ## Examples
 
-      iex> ExDbmigrate.generate()
+      iex> ExDbmigrate.schema()
       []
 
   """
-  def generate() do
-    fetch_tables()
-  end
-
-  def generate_args() do
-    fetch_tables(false)
-  end
-
-  def fetch_tables(command \\ false) do
-    query =
-      "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' and table_name != 'schema_migrations';"
-
-    results = Ecto.Adapters.SQL.query!(@repo, query, [])
+  def schema() do
+    results = fetch_results()
 
     Enum.map(results.rows, fn r ->
       fetch_table_data(r)
-      |> generate_schemas_command(r, command)
+      |> generate_schemas_command(r)
     end)
+  end
+
+  @doc """
+  Generate schema from config.
+
+  ## Examples
+
+      iex> ExDbmigrate.html()
+      []
+
+  """
+  def html() do
+    results = fetch_results()
+
+    Enum.map(results.rows, fn r ->
+      fetch_table_data(r)
+      |> generate_htmls_command(r)
+    end)
+  end
+
+  @doc """
+  Generate schema from config.
+
+  ## Examples
+
+      iex> ExDbmigrate.json()
+      []
+
+  """
+  def json() do
+    results = fetch_results()
+
+    Enum.map(results.rows, fn r ->
+      fetch_table_data(r)
+      |> generate_jsons_command(r)
+    end)
+  end
+
+  @doc """
+  Generate schema from config.
+
+  ## Examples
+
+      iex> ExDbmigrate.live()
+      []
+
+  """
+  def live() do
+    results = fetch_results()
+
+    Enum.map(results.rows, fn r ->
+      fetch_table_data(r)
+      |> generate_lives_command(r)
+    end)
+  end
+
+  def fetch_results() do
+    query =
+      "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' and table_name != 'schema_migrations';"
+
+    Ecto.Adapters.SQL.query!(@repo, query, [])
   end
 
   def fetch_table_data(r) do
@@ -43,7 +93,7 @@ WHERE table_schema = 'public'
     Ecto.Adapters.SQL.query!(@repo, query, [])
   end
 
-  def generate_schemas_command(data, [migration_name], command) do
+  def generate_jsons_command(data, [migration_name]) do
     migration_string =
       data.rows
       |> Enum.map(fn [id, _is_null, type, _position, _max_length] ->
@@ -52,12 +102,63 @@ WHERE table_schema = 'public'
       end)
       |> Enum.join(" ")
 
-    ucase_migration_name = String.split(migration_name, "_") |> Enum.map(fn x -> String.capitalize(x) end) |> Enum.join("")
+    migration_module =
+      String.split(migration_name, "_")
+      |> Enum.map(fn x -> String.capitalize(x) end)
+      |> Enum.join("")
 
-    case command do
-      true -> "mix phx.gen.schema #{ucase_migration_name} #{migration_name} #{migration_string}"
-      false -> "phx.gen.schema #{ucase_migration_name} #{migration_name} #{migration_string}"
-    end
+    "mix phx.gen.json #{migration_module} #{migration_name} #{migration_string}"
+  end
+
+  def generate_lives_command(data, [migration_name]) do
+    migration_string =
+      data.rows
+      |> Enum.map(fn [id, _is_null, type, _position, _max_length] ->
+        type = type_select(type)
+        "#{id}:#{type}"
+      end)
+      |> Enum.join(" ")
+
+    migration_module =
+      String.split(migration_name, "_")
+      |> Enum.map(fn x -> String.capitalize(x) end)
+      |> Enum.join("")
+
+    "mix phx.gen.live #{migration_module} #{migration_name} #{migration_string}"
+  end
+
+  def generate_htmls_command(data, [migration_name]) do
+    migration_string =
+      data.rows
+      |> Enum.map(fn [id, _is_null, type, _position, _max_length] ->
+        type = type_select(type)
+        "#{id}:#{type}"
+      end)
+      |> Enum.join(" ")
+
+    migration_module =
+      String.split(migration_name, "_")
+      |> Enum.map(fn x -> String.capitalize(x) end)
+      |> Enum.join("")
+
+    "mix phx.gen.html #{migration_module} #{migration_name} #{migration_string}"
+  end
+
+  def generate_schemas_command(data, [migration_name]) do
+    migration_string =
+      data.rows
+      |> Enum.map(fn [id, _is_null, type, _position, _max_length] ->
+        type = type_select(type)
+        "#{id}:#{type}"
+      end)
+      |> Enum.join(" ")
+
+    migration_module =
+      String.split(migration_name, "_")
+      |> Enum.map(fn x -> String.capitalize(x) end)
+      |> Enum.join("")
+
+    "mix phx.gen.schema #{migration_module} #{migration_name} #{migration_string}"
   end
 
   defp type_select(t) do
