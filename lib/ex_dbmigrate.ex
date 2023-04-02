@@ -97,8 +97,10 @@ WHERE table_schema = 'public'
     migration_string =
       data.rows
       |> Enum.map(fn [id, _is_null, type, _position, _max_length] ->
-        type = type_select(type)
-        "#{id}:#{type}"
+        unless id == "id" do
+          type = type_select(type)
+          "#{id}:#{type}"
+        end
       end)
       |> Enum.join(" ")
 
@@ -114,8 +116,10 @@ WHERE table_schema = 'public'
     migration_string =
       data.rows
       |> Enum.map(fn [id, _is_null, type, _position, _max_length] ->
-        type = type_select(type)
-        "#{id}:#{type}"
+        unless id == "id" do
+          type = type_select(type)
+          "#{id}:#{type}"
+        end
       end)
       |> Enum.join(" ")
 
@@ -131,8 +135,10 @@ WHERE table_schema = 'public'
     migration_string =
       data.rows
       |> Enum.map(fn [id, _is_null, type, _position, _max_length] ->
-        type = type_select(type)
-        "#{id}:#{type}"
+        unless id == "id" do
+          type = type_select(type)
+          "#{id}:#{type}"
+        end
       end)
       |> Enum.join(" ")
 
@@ -148,8 +154,10 @@ WHERE table_schema = 'public'
     migration_string =
       data.rows
       |> Enum.map(fn [id, _is_null, type, _position, _max_length] ->
-        type = type_select(type)
-        "#{id}:#{type}"
+        unless id == "id" do
+          type = type_select(type)
+          "#{id}:#{type}"
+        end
       end)
       |> Enum.join(" ")
 

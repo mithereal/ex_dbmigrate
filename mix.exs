@@ -33,7 +33,7 @@ defmodule ExDbmigrate.MixProject do
   defp package do
     # These are the default files included in the package
     [
-      name: :ex_catalog,
+      name: :ex_dbmigrate,
       files: ["lib", "mix.exs", "README*"],
       maintainers: ["Jason Clark"],
       licenses: ["Apache-2.0"],
@@ -62,6 +62,7 @@ defmodule ExDbmigrate.MixProject do
       {:ex_doc, ">= 0.0.0", only: :dev},
       {:credo, "~> 0.9.1", only: [:dev, :test], runtime: false},
       {:postgrex, ">= 0.0.0"},
+      {:myxql, ">= 0.0.0"},
       {:ecto, "~> 3.5"},
       {:ecto_sql, "~> 3.5"},
       {:phoenix, "~> 1.7"}
