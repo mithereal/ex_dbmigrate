@@ -15,41 +15,54 @@ defmodule ExDbmigrate do
 
   """
   def generate() do
-    postgres_query()
+    fetch_tables()
   end
 
-  def mysql_query do
-    import Ecto.Query, only: [from: 2]
+  def generate_args() do
+    fetch_tables(false)
+  end
 
-    schema = Application.get_env(:ex_dbmigrate, :ecto_repos, :not_found)
-
+  def fetch_tables(command \\ false) do
     query =
-      from(c in "INFORMATION_SCHEMA.COLUMNS",
-        where: "TABLE_SCHEMA" == ^schema,
-        select: c."COLUMN_NAME"
-      )
-
-    @repo.all(query)
-  end
-
-  def postgres_query do
-    import Ecto.Query, only: [from: 2]
-
-    query = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';"
+      "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' and table_name != 'schema_migrations';"
 
     results = Ecto.Adapters.SQL.query!(@repo, query, [])
 
     Enum.map(results.rows, fn r ->
       fetch_table_data(r)
+      |> generate_migration_command(r, command)
     end)
   end
 
-  defp fetch_table_data(r) do
+  def fetch_table_data(r) do
     query =
       "SELECT column_name, is_nullable, data_type, ordinal_position, character_maximum_length FROM information_schema.columns
 WHERE table_schema = 'public'
   AND table_name   = '#{r}'"
 
     Ecto.Adapters.SQL.query!(@repo, query, [])
+  end
+
+  def generate_migration_command(data, migration_name, command) do
+    migration_string =
+      data.rows
+      |> Enum.map(fn [id, _is_null, type, _position, _max_length] ->
+        type = type_select(type)
+        "#{id}:#{type}"
+      end)
+      |> Enum.join(" ")
+
+    case command do
+      true -> "mix ecto.gen.migration #{migration_name} #{migration_string}"
+      false -> "ecto.gen.migration #{migration_name} #{migration_string}"
+    end
+  end
+
+  defp type_select(t) do
+    case(t) do
+      "character varying" -> "string"
+      "USER-DEFINED" -> "any"
+      data -> data
+    end
   end
 end
