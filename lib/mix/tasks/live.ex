@@ -3,7 +3,7 @@ defmodule Mix.Tasks.ExDbmigrate.Gen.Live do
 
   @moduledoc """
     After configuring your default ecto repo in `:ecto_repos`
-    Run mix ExDbmigrate to generates a migration.
+    Run mix ExDbmigrate to generates a live view.
   """
 
   def run(_args) do

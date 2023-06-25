@@ -3,7 +3,7 @@ defmodule Mix.Tasks.ExDbmigrate.Gen.Json do
 
   @moduledoc """
     After configuring your default ecto repo in `:ecto_repos`
-    Run mix ExDbmigrate to generates a migration.
+    Run mix ExDbmigrate to generates a json view.
   """
 
   def run(_args) do
