@@ -5,6 +5,24 @@ defmodule ExDbmigrate do
 
   @repo ExDbmigrate.Config.repo()
 
+    @doc """
+  Generate migration from config.
+
+  ## Examples
+
+      iex> ExDbmigrate.migration()
+      []
+
+  """
+  def migration() do
+    results = fetch_results()
+
+    Enum.map(results.rows, fn r ->
+      fetch_table_data(r)
+      |> generate_migration_command(r)
+    end)
+  end
+
   @doc """
   Generate schema from config.
 
@@ -150,6 +168,25 @@ WHERE table_schema = 'public'
     "mix phx.gen.html #{migration_module} #{migration_name} #{migration_string}"
   end
 
+  def generate_migration_command(data, [migration_name]) do
+    migration_string =
+      data.rows
+      |> Enum.map(fn [id, _is_null, type, _position, _max_length] ->
+        unless id == "id" do
+          type = type_select(type)
+          "#{id}:#{type}"
+        end
+      end)
+      |> Enum.join(" ")
+
+    migration_module =
+      String.split(migration_name, "_")
+      |> Enum.map(fn x -> String.capitalize(x) end)
+      |> Enum.join("")
+
+    "mix phx.gen.migration #{migration_module} #{migration_name} #{migration_string}"
+  end
+
   def generate_schemas_command(data, [migration_name]) do
     migration_string =
       data.rows
@@ -166,7 +203,7 @@ WHERE table_schema = 'public'
       |> Enum.map(fn x -> String.capitalize(x) end)
       |> Enum.join("")
 
-    "mix phx.gen.schema #{migration_module} #{migration_name} #{migration_string}"
+    "mix phx.gen.schema #{migration_module} #{migration_name} #{migration_string} --no-migration"
   end
 
   defp type_select(t) do
