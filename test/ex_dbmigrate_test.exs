@@ -2,7 +2,7 @@ defmodule ExDbmigrateTest do
   use ExUnit.Case
   doctest ExDbmigrate
 
-  test "greets the world" do
-    assert ExDbmigrate.hello() == :world
+  test "fetch results" do
+    assert ExDbmigrate.fetch_results().num_rows > 0
   end
 end

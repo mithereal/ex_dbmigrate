@@ -25,7 +25,6 @@ defmodule ExDbmigrate.MixProject do
     ]
   end
 
-
   defp description do
     "Create Db Migrations from Pre-Existing Database."
   end
@@ -54,7 +53,6 @@ defmodule ExDbmigrate.MixProject do
       c: "compile"
     ]
   end
-
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do

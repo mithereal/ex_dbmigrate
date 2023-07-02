@@ -9,7 +9,10 @@ defmodule Mix.Tasks.ExDbmigrate.Gen.Migtation do
   def run(_args) do
     {:ok, _} = Application.ensure_all_started(:ex_dbmigrate)
     Mix.shell().info("ExDbmigrate v#{Application.spec(:ex_dbmigrate, :vsn)}")
-    ExDbmigrate.migration() |> Enum.map(fn x ->
-      IO.inspect(x) end)
+
+    ExDbmigrate.migration()
+    |> Enum.map(fn x ->
+      IO.inspect(x)
+    end)
   end
 end
