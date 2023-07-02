@@ -6,7 +6,8 @@ defmodule ExDbmigrate.Table.Server do
   @assoc_types [:belongs_to,:many_to_many,:has_one,:has_many]
 
   defstruct table: nil,
-            links: nil,
+            links: [],
+            incoming_links: [],
             assoc_type: nil,
             schema: %{},
             timestamps: false
@@ -29,10 +30,16 @@ defmodule ExDbmigrate.Table.Server do
     GenServer.call(name, {:links, data})
   end
 
+  def send_incoming_links(arg) do
+    name = via_tuple(arg)
+    GenServer.call(name, :send_incoming_links)
+  end
+
   def init(init_arg) do
     data = ExDbmigrate.list_foreign_keys(init_arg)
 
     ref_type = ExDbmigrate.Config.key_type()
+    timestamp_fields = Application.fetch_env!(:ex_dbmigrate, :timestamp_fields, [:updated_at, :inserted_at])
 
     link_data =
       Enum.map(data, fn data ->
@@ -75,10 +82,12 @@ defmodule ExDbmigrate.Table.Server do
         id
       end)
 
-    timestamps =
-      Enum.member?(column_names, :updated_at) || Enum.member?(column_names, :inserted_at)
+    timestamps = Enum.map(column_names, fn(x) ->
+      Enum.member?(timestamp_fields, x)
+    end)
+      |> Enum.reject(fn(x)-> x != true end) |> Enum.count() > 0
 
-    schema_data = Keyword.drop(schema_data, [:updated_at, :inserted_at])
+    schema_data = Keyword.drop(schema_data, timestamp_fields)
 
     {:ok,
      %__MODULE__{table: init_arg, links: link_data, schema: schema_data, timestamps: timestamps, assoc_type: assoc_type}}
@@ -100,6 +109,21 @@ defmodule ExDbmigrate.Table.Server do
 
   @impl true
   def handle_call(
+        :send_incoming_links,
+        _from,
+        state
+      ) do
+    Emun.map(state.links, fn(x) ->
+      name = via_tuple(x.ref_table)
+     x = %{x | ref_table: state.table}
+      GenServer.call(name, {:incoming_link, x})
+    end)
+
+    {:reply, state, state}
+  end
+
+  @impl true
+  def handle_call(
         {:links, data},
         _from,
         state
@@ -115,6 +139,25 @@ defmodule ExDbmigrate.Table.Server do
       end)
 
     state = %{state | links: link_data}
+
+    {:reply, state, state}
+  end
+
+  def incoming_link(name, data) do
+    name = via_tuple(name)
+    GenServer.call(name, {:incoming_link, data})
+  end
+
+  @impl true
+  def handle_call(
+        {:incoming_link, data},
+        _from,
+        state
+      ) do
+
+    link_data = state.link_data ++ [data]
+
+    state = %{state | incoming_links: link_data}
 
     {:reply, state, state}
   end

@@ -37,6 +37,11 @@ defmodule ExDbmigrate.Application do
       |> ExDbmigrate.Table.Supervisor.start()
     end)
 
+    Enum.each(results.rows, fn r ->
+      r
+      |> ExDbmigrate.Table.Server.send_incoming_links(r)
+    end)
+
     params
   end
 end
