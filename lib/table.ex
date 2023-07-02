@@ -3,9 +3,11 @@ defmodule ExDbmigrate.Table.Server do
   require Logger
 
   @registry_name :tables
+  @assoc_types [:belongs_to,:many_to_many,:has_one,:has_many]
 
   defstruct table: nil,
             links: nil,
+            assoc_type: nil,
             schema: %{},
             timestamps: false
 
@@ -44,6 +46,12 @@ defmodule ExDbmigrate.Table.Server do
         }
       end)
 
+    assoc_type = case Enum.count(link_data) do
+      x when x > 1 -> :many_to_many
+      1 -> :belongs_to
+      0 -> nil
+    end
+
     data = ExDbmigrate.fetch_table_data(init_arg)
 
     column_names =
@@ -73,7 +81,7 @@ defmodule ExDbmigrate.Table.Server do
     schema_data = Keyword.drop(schema_data, [:updated_at, :inserted_at])
 
     {:ok,
-     %__MODULE__{table: init_arg, links: link_data, schema: schema_data, timestamps: timestamps}}
+     %__MODULE__{table: init_arg, links: link_data, schema: schema_data, timestamps: timestamps, assoc_type: assoc_type}}
   end
 
   def start_link([arg]) do
