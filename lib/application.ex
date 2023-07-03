@@ -32,14 +32,16 @@ defmodule ExDbmigrate.Application do
   def load(params) do
     results = ExDbmigrate.fetch_results()
 
-    Enum.each(results.rows, fn r ->
-      r
-      |> ExDbmigrate.Table.Supervisor.start()
+    tasks = Enum.map(results.rows, fn r ->
+      Task.async(fn -> ExDbmigrate.Table.Supervisor.start(r) end)
+
     end)
 
-    Enum.each(results.rows, fn r ->
-      r
-      |> ExDbmigrate.Table.Server.send_incoming_links(r)
+    Task.await_many(tasks)
+
+    Enum.map(results.rows, fn r ->
+      List.first(r)
+      |> ExDbmigrate.Table.Server.send_incoming_links()
     end)
 
     params

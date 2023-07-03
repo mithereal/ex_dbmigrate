@@ -39,7 +39,7 @@ defmodule ExDbmigrate.Table.Server do
     data = ExDbmigrate.list_foreign_keys(init_arg)
 
     ref_type = ExDbmigrate.Config.key_type()
-    timestamp_fields = Application.fetch_env!(:ex_dbmigrate, :timestamp_fields, [:updated_at, :inserted_at])
+    timestamp_fields = Application.get_env(:ex_dbmigrate, :timestamp_fields, [:updated_at, :inserted_at])
 
     link_data =
       Enum.map(data, fn data ->
@@ -113,9 +113,10 @@ defmodule ExDbmigrate.Table.Server do
         _from,
         state
       ) do
-    Emun.map(state.links, fn(x) ->
-      name = via_tuple(x.ref_table)
-     x = %{x | ref_table: state.table}
+    Enum.map(state.links, fn(x) ->
+      name = via_tuple(x.references.ref_table)
+      references = %{x.references | ref_table: state.table}
+     x = %{x | references: references}
       GenServer.call(name, {:incoming_link, x})
     end)
 
@@ -155,7 +156,7 @@ defmodule ExDbmigrate.Table.Server do
         state
       ) do
 
-    link_data = state.link_data ++ [data]
+    link_data = state.incoming_links ++ [data]
 
     state = %{state | incoming_links: link_data}
 
