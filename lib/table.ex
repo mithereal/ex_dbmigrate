@@ -35,6 +35,11 @@ defmodule ExDbmigrate.Table.Server do
     GenServer.call(name, :send_incoming_links)
   end
 
+  def assoc_type(arg) do
+    name = via_tuple(arg)
+    GenServer.call(name, :assoc_type)
+  end
+
   def init(init_arg) do
     data = ExDbmigrate.list_foreign_keys(init_arg)
 
@@ -120,6 +125,25 @@ defmodule ExDbmigrate.Table.Server do
       GenServer.call(name, {:incoming_link, x})
     end)
 
+    {:reply, state, state}
+  end
+
+  @impl true
+  def handle_call(
+        :assoc_type,
+        _from,
+        state
+      ) do
+
+    ref_type = ExDbmigrate.Config.key_type()
+
+    assoc_type = case Enum.count(state.links) do
+      x when x > 1 -> :many_to_many
+      1 -> :belongs_to
+      0 -> nil
+    end
+
+    state = %{state | assoc_type: assoc_type}
     {:reply, state, state}
   end
 

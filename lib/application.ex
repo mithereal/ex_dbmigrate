@@ -44,6 +44,11 @@ defmodule ExDbmigrate.Application do
       |> ExDbmigrate.Table.Server.send_incoming_links()
     end)
 
+    Enum.map(results.rows, fn r ->
+      List.first(r)
+      |> ExDbmigrate.Table.Server.assoc_type()
+    end)
+
     params
   end
 end
