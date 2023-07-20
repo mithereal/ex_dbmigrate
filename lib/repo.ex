@@ -26,40 +26,11 @@ defmodule ExDbmigrate.Repo do
 end
 
 defmodule ExDbmigrate.Repo.Null do
-  def child_spec(init) do
-    %{
-      id: __MODULE__,
-      start: {__MODULE__, :start_link, [init]},
-      restart: :transient,
-      type: :worker
-    }
-  end
+  use Ecto.Repo,
+      otp_app: :ex_dbmigrate,
+      adapter: Ecto.Adapters.SQL.Sandbox
 
-  def start_link([]) do
-    GenServer.start_link(__MODULE__, [], name: :ex_null_repo)
-  end
-
-  def init(init_arg) do
-    {:ok, init_arg}
-  end
-
-  def all(_) do
-    []
-  end
-
-  def all(_, _) do
-    []
-  end
-
-  def get_by(_, _) do
-    []
-  end
-
-  def get_by!(_, _) do
-    []
-  end
-
-  def one(_, _) do
-    []
+  def init(_, opts) do
+    {:ok, Keyword.put(opts, :url, System.get_env("DATABASE_URL"))}
   end
 end
