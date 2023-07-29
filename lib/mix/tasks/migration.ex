@@ -16,13 +16,11 @@ defmodule Mix.Tasks.ExDbmigrate.Gen.Migration do
     end)
   end
 
-
   def generate(args) do
     source = Path.join(Application.app_dir(:ex_dbmigrate, "/priv/"), "migration.exs")
     name = Keyword.fetch(args, :name)
 
-    target =
-      Path.join(File.cwd!(), "/priv/repo/migrations/#{timestamp()}_#{name}.exs")
+    target = Path.join(File.cwd!(), "/priv/repo/migrations/#{timestamp()}_#{name}.exs")
 
     if !File.dir?(target) do
       File.mkdir_p("priv/repo/migrations/")

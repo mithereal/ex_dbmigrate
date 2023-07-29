@@ -3,7 +3,7 @@ defmodule ExDbmigrate.Table.Server do
   require Logger
 
   @registry_name :tables
-  @assoc_types [:belongs_to,:many_to_many,:has_one,:has_many]
+  @assoc_types [:belongs_to, :many_to_many, :has_one, :has_many]
 
   defstruct table: nil,
             links: [],
@@ -44,7 +44,9 @@ defmodule ExDbmigrate.Table.Server do
     data = ExDbmigrate.list_foreign_keys(init_arg)
 
     ref_type = ExDbmigrate.Config.key_type()
-    timestamp_fields = Application.get_env(:ex_dbmigrate, :timestamp_fields, [:updated_at, :inserted_at])
+
+    timestamp_fields =
+      Application.get_env(:ex_dbmigrate, :timestamp_fields, [:updated_at, :inserted_at])
 
     link_data =
       Enum.map(data, fn data ->
@@ -58,11 +60,12 @@ defmodule ExDbmigrate.Table.Server do
         }
       end)
 
-    assoc_type = case Enum.count(link_data) do
-      x when x > 1 -> :many_to_many
-      1 -> :belongs_to
-      0 -> nil
-    end
+    assoc_type =
+      case Enum.count(link_data) do
+        x when x > 1 -> :many_to_many
+        1 -> :belongs_to
+        0 -> nil
+      end
 
     data = ExDbmigrate.fetch_table_data(init_arg)
 
@@ -87,15 +90,23 @@ defmodule ExDbmigrate.Table.Server do
         id
       end)
 
-    timestamps = Enum.map(column_names, fn(x) ->
-      Enum.member?(timestamp_fields, x)
-    end)
-      |> Enum.reject(fn(x)-> x != true end) |> Enum.count() > 0
+    timestamps =
+      Enum.map(column_names, fn x ->
+        Enum.member?(timestamp_fields, x)
+      end)
+      |> Enum.reject(fn x -> x != true end)
+      |> Enum.count() > 0
 
     schema_data = Keyword.drop(schema_data, timestamp_fields)
 
     {:ok,
-     %__MODULE__{table: init_arg, links: link_data, schema: schema_data, timestamps: timestamps, assoc_type: assoc_type}}
+     %__MODULE__{
+       table: init_arg,
+       links: link_data,
+       schema: schema_data,
+       timestamps: timestamps,
+       assoc_type: assoc_type
+     }}
   end
 
   def start_link([arg]) do
@@ -118,10 +129,10 @@ defmodule ExDbmigrate.Table.Server do
         _from,
         state
       ) do
-    Enum.map(state.links, fn(x) ->
+    Enum.map(state.links, fn x ->
       name = via_tuple(x.references.ref_table)
       references = %{x.references | ref_table: state.table}
-     x = %{x | references: references}
+      x = %{x | references: references}
       GenServer.call(name, {:incoming_link, x})
     end)
 
@@ -134,14 +145,14 @@ defmodule ExDbmigrate.Table.Server do
         _from,
         state
       ) do
-
     ref_type = ExDbmigrate.Config.key_type()
 
-    assoc_type = case Enum.count(state.links) do
-      x when x > 1 -> :many_to_many
-      1 -> :belongs_to
-      0 -> nil
-    end
+    assoc_type =
+      case Enum.count(state.links) do
+        x when x > 1 -> :many_to_many
+        1 -> :belongs_to
+        0 -> nil
+      end
 
     state = %{state | assoc_type: assoc_type}
     {:reply, state, state}
@@ -179,7 +190,6 @@ defmodule ExDbmigrate.Table.Server do
         _from,
         state
       ) do
-
     link_data = state.incoming_links ++ [data]
 
     state = %{state | incoming_links: link_data}

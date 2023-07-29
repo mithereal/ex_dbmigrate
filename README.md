@@ -1,4 +1,9 @@
 # ExDbmigrate
+[![Hex Docs](https://img.shields.io/badge/hex-docs-lightgreen.svg)](https://hexdocs.pm/ex_dbmigrate/)
+[![Hex.pm](https://img.shields.io/hexpm/dt/ex_dbmigrate.svg)](https://hex.pm/packages/ex_dbmigrate)
+[![License](https://img.shields.io/hexpm/l/ex_dbmigrate.svg)](https://github.com/mithereal/ex_dbmigrate/blob/master/LICENSE)
+[![Last Updated](https://img.shields.io/github/last-commit/mithereal/ex_dbmigrate.svg)](https://github.com/mithereal/ex_dbmigrate/commits/master)
+[![Build Status](https://circleci.com/gh/mithereal/ex_dbmigrate.svg?style=svg)](https://github.com/mithereal/ex_dbmigrate)
 
 **Generate phoenix schemas, html, json and live from existing database**
 
