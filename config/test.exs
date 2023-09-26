@@ -2,7 +2,7 @@ import Config
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
 
-config :ex_catalog, ExDbmigrate.Repo,
+config :ex_dbmigrate, ExDbmigrate.Repo,
   adapter: Ecto.Adapters.Postgres,
   username: "postgres",
   password: "postgres",
