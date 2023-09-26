@@ -55,7 +55,7 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name='#{table}';
   ## Examples
 
       iex> ExDbmigrate.migration()
-       []
+      []
 
   """
   def migration() do
