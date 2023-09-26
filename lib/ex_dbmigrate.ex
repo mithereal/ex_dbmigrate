@@ -277,7 +277,7 @@ WHERE table_schema = 'public'
     migration_string =
       fk_data
       |> Enum.map(fn map ->
-        type = type_select(map.type)
+        type = ExDbmigrate.Config.key_type()
         "#{map.id}:#{type}"
       end)
       |> Enum.join(" ")
