@@ -272,7 +272,7 @@ WHERE table_schema = 'public'
 
     "mix phx.gen.migration #{migration_module} #{migration_name} #{migration_string}"
   end
-### FIXME:: type is undefined
+
   def generate_migration_relations_data(fk_data, _) do
     migration_string =
       fk_data
