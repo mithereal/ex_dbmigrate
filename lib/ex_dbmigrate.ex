@@ -78,7 +78,11 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name='#{table}';
   ## Examples
 
       iex> ExDbmigrate.migration_relations()
-      []
+      ["mix phx.gen.migration CatalogMetasRelations catalog_metasrelations product_id:references:catalog_products",
+       "mix phx.gen.migration CatalogVideosToProductRelations catalog_videos_to_productrelations product_id:references:catalog_products video_id:references:catalog_videos",
+       "mix phx.gen.migration CatalogProductsRelations catalog_productsrelations ",
+       "mix phx.gen.migration CatalogVideosRelations catalog_videosrelations "
+      ]
 
   """
   def migration_relations() do
