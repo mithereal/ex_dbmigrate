@@ -10,6 +10,6 @@ config :ex_dbmigrate, ExDbmigrate.Repo,
   password: "postgres",
   database: "ex_dbmigrate",
   hostname: "localhost",
-  port: 55432,
+  port: 55436,
   pool_size: 10,
   primary_key_type: :uuid

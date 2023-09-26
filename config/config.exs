@@ -27,6 +27,6 @@ import Config
 #
 #     import_config "#{Mix.env()}.exs"
 
-config :ex_dbmigrate, :ecto_repos, [ExDbmigrate.Repo.Null]
+config :ex_dbmigrate, :ecto_repos, [ExDbmigrate.Repo]
 
 import_config "#{Mix.env()}.exs"

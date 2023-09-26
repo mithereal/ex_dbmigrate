@@ -10,7 +10,7 @@ services:
     networks:
       - default
     ports:
-      - 55432:5432
+      - 55436:5432
     volumes:
       - data:/var/lib/postgresql/data
 
