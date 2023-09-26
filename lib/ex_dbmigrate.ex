@@ -282,7 +282,9 @@ WHERE table_schema = 'public'
     migration_module =
       String.split(migration_name, "_")
       |> Enum.map(fn x -> String.capitalize(x) end)
-      |> Enum.join("") <> "Relations"
+      |> Enum.join("")
+
+    migration_module =migration_module <> "Relations"
 
     migration_name = migration_name <> "relations"
 
