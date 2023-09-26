@@ -13,7 +13,10 @@ defmodule ExDbmigrate.MixProject do
       package: package(),
       description: description(),
       docs: docs(),
-      aliases: aliases()
+      aliases: aliases(),
+      name: "ex_dbmigrate",
+      source_url: @source_url,
+      elixirc_paths: elixirc_paths(Mix.env())
     ]
   end
 
@@ -50,7 +53,16 @@ defmodule ExDbmigrate.MixProject do
 
   defp aliases do
     [
-      c: "compile"
+      c: "compile",
+      test: [
+        "ecto.drop --quiet",
+        "ecto.create --quiet",
+        "ecto.migrate --quiet",
+        "run priv/seeds.exs",
+        "test"
+      ],
+      "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/seeds.exs"],
+      "ecto.reset": ["ecto.drop", "ecto.setup"]
     ]
   end
 
