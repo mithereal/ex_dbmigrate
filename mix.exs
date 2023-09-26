@@ -15,8 +15,7 @@ defmodule ExDbmigrate.MixProject do
       docs: docs(),
       aliases: aliases(),
       name: "ex_dbmigrate",
-      source_url: @source_url,
-      elixirc_paths: elixirc_paths(Mix.env())
+      source_url: @source_url
     ]
   end
 
