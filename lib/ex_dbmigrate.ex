@@ -99,11 +99,11 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name='#{table}';
   ## Examples
 
       iex> ExDbmigrate.schema()
-       ["mix phx.gen.schema CatalogMetas catalog_metas  key:string data:string product_id:integer inserted_at:naive_datetime updated_at:naive_datetime --no-migration",
-        "mix phx.gen.schema CatalogVideosToProduct catalog_videos_to_product  product_id:integer video_id:integer --no-migration",
-        "mix phx.gen.schema CatalogProducts catalog_products  name:string inserted_at:naive_datetime updated_at:naive_datetime --no-migration",
-        "mix phx.gen.schema CatalogVideos catalog_videos  path:string inserted_at:naive_datetime updated_at:naive_datetime --no-migration"
-       ]
+      ["mix phx.gen.schema CatalogMetas catalog_metas  key:string data:string product_id:integer inserted_at:naive_datetime updated_at:naive_datetime --no-migration",
+       "mix phx.gen.schema CatalogVideosToProduct catalog_videos_to_product  product_id:integer video_id:integer --no-migration",
+       "mix phx.gen.schema CatalogProducts catalog_products  name:string inserted_at:naive_datetime updated_at:naive_datetime --no-migration",
+       "mix phx.gen.schema CatalogVideos catalog_videos  path:string inserted_at:naive_datetime updated_at:naive_datetime --no-migration"
+      ]
 
   """
   def schema() do
