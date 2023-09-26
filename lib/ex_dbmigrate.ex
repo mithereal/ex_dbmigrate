@@ -84,13 +84,11 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name='#{table}';
   def migration_relations() do
     results = fetch_results()
 
-    data =
       Enum.map(results.rows, fn r ->
         list_foreign_keys(r)
-        |> generate_migration_relations_data(r)
+        |> generate_migration_relations_command(r)
       end)
 
-    {:ok, data}
   end
 
   @doc """
@@ -273,14 +271,22 @@ WHERE table_schema = 'public'
     "mix phx.gen.migration #{migration_module} #{migration_name} #{migration_string}"
   end
 
-  def generate_migration_relations_data(fk_data, _) do
-    migration_string =
-      fk_data
+  def generate_migration_relations_command(fk_data, [migration_name]) do
+
+    migration_string = fk_data
       |> Enum.map(fn map ->
-        type = ExDbmigrate.Config.key_type()
-        "#{map.id}:#{type}"
+        "#{map.column_name}:references:#{map.foreign_table_name}"
       end)
       |> Enum.join(" ")
+
+    migration_module =
+      String.split(migration_name, "_")
+      |> Enum.map(fn x -> String.capitalize(x) end)
+      |> Enum.join("") <> "Relations"
+
+    migration_name = migration_name <> "relations"
+
+    "mix phx.gen.migration #{migration_module} relations #{migration_string}"
   end
 
   def generate_schemas_command(data, [migration_name]) do
