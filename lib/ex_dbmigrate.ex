@@ -288,7 +288,7 @@ WHERE table_schema = 'public'
 
     migration_name = migration_name <> "relations"
 
-    "mix phx.gen.migration #{migration_module} relations #{migration_string}"
+    "mix phx.gen.migration #{migration_module} #{migration_name} #{migration_string}"
   end
 
   def generate_schemas_command(data, [migration_name]) do
