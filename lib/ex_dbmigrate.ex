@@ -284,7 +284,7 @@ WHERE table_schema = 'public'
       |> Enum.map(fn x -> String.capitalize(x) end)
       |> Enum.join("")
 
-    migration_module =migration_module <> "Relations"
+    migration_module = migration_module <> "Relations"
 
     migration_name = migration_name <> "relations"
 
