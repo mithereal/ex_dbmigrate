@@ -11,7 +11,8 @@ defmodule ExDbmigrate do
   ## Examples
 
       iex> ExDbmigrate.list_foreign_keys("catalog_metas")
-      []
+      [%{column_name: "product_id", constraint_name: "catalog_metas_product_id_fkey", foreign_column_name: "id", foreign_table_name: "catalog_products", foreign_table_schema: "public", table_name: "catalog_metas", table_schema: "public"}
+      ]
 
   """
   def list_foreign_keys(table) do
