@@ -55,11 +55,7 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name='#{table}';
   ## Examples
 
       iex> ExDbmigrate.migration()
-       ["mix phx.gen.migration CatalogMetas catalog_metas  key:string data:string product_id:integer inserted_at:naive_datetime updated_at:naive_datetime",
-        "mix phx.gen.migration CatalogVideosToProduct catalog_videos_to_product  product_id:integer video_id:integer",
-        "mix phx.gen.migration CatalogProducts catalog_products  name:string inserted_at:naive_datetime updated_at:naive_datetime",
-        "mix phx.gen.migration CatalogVideos catalog_videos  path:string inserted_at:naive_datetime updated_at:naive_datetime"
-       ]
+       []
 
   """
   def migration() do
@@ -98,11 +94,7 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name='#{table}';
   ## Examples
 
       iex> ExDbmigrate.schema()
-       ["mix phx.gen.migration CatalogMetas catalog_metas  key:string data:string product_id:integer inserted_at:naive_datetime updated_at:naive_datetime",
-        "mix phx.gen.migration CatalogVideosToProduct catalog_videos_to_product  product_id:integer video_id:integer",
-        "mix phx.gen.migration CatalogProducts catalog_products  name:string inserted_at:naive_datetime updated_at:naive_datetime",
-        "mix phx.gen.migration CatalogVideos catalog_videos  path:string inserted_at:naive_datetime updated_at:naive_datetime"
-       ]
+      []
 
   """
   def schema() do
