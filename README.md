@@ -15,6 +15,7 @@
 ```bash
  mix archive.install hex phx_new
  mix phx.new app_name
+ cd app_name
 ```
 
 
