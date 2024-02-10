@@ -25,7 +25,7 @@ by adding `ex_dbmigrate` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:ex_dbmigrate, ">=0.0.0"}
+    {:ex_dbmigrate, ">= 0.0.0"}
   ]
 end
 ```
