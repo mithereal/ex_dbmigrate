@@ -15,15 +15,15 @@ by adding `ex_dbmigrate` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:ex_dbmigrate, "~> 1.1.0"}
+    {:ex_dbmigrate, ">=0.0.0"}
   ]
 end
 ```
 
 ## Usage: 
 ```bash
-mix ExDbmigrate.Gen.Migrations
-mix ExDbmigrate.Gen.Relations
+mix ExDbmigrate.Gen.Migration
+mix ExDbmigrate.Gen.Relation
 mix ExDbmigrate.Gen.Schema
 mix ExDbmigrate.Gen.Html
 mix ExDbmigrate.Gen.Json

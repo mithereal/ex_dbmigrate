@@ -1,4 +1,4 @@
-defmodule Mix.Tasks.ExDbmigrate.Gen.Relations do
+defmodule Mix.Tasks.ExDbmigrate.Gen.Relation do
   use Mix.Task
 
   @moduledoc """

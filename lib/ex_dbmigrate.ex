@@ -88,11 +88,10 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name='#{table}';
   def migration_relations() do
     results = fetch_results()
 
-      Enum.map(results.rows, fn r ->
-        list_foreign_keys(r)
-        |> generate_migration_relations_command(r)
-      end)
-
+    Enum.map(results.rows, fn r ->
+      list_foreign_keys(r)
+      |> generate_migration_relations_command(r)
+    end)
   end
 
   @doc """
@@ -276,8 +275,8 @@ WHERE table_schema = 'public'
   end
 
   def generate_migration_relations_command(fk_data, [migration_name]) do
-
-    migration_string = fk_data
+    migration_string =
+      fk_data
       |> Enum.map(fn map ->
         "#{map.column_name}:references:#{map.foreign_table_name}"
       end)
@@ -322,7 +321,6 @@ WHERE table_schema = 'public'
       "USER-DEFINED" -> "any"
       nil -> "string"
       data -> data
-
     end
   end
 end
