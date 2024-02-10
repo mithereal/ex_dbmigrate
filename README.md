@@ -9,6 +9,14 @@
 
 ## Installation
 
+- install elixir "https://elixir-lang.org/install.html"
+- install phoenix "https://hexdocs.pm/phoenix/installation.html"
+
+```bash
+ mix archive.install hex phx_new
+```
+
+
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
 by adding `ex_dbmigrate` to your list of dependencies in `mix.exs`:
 
