@@ -1,6 +1,6 @@
 defmodule ExDbmigrate.MixProject do
   use Mix.Project
-  @version "1.1.0"
+  @version "1.1.1"
   @source_url "https://github.com/mithereal/ExDbmigrate"
 
   def project do
@@ -35,7 +35,7 @@ defmodule ExDbmigrate.MixProject do
     # These are the default files included in the package
     [
       name: :ex_dbmigrate,
-      files: ["lib", "mix.exs", "README*"],
+      files: ["lib", "priv", "mix.exs", "README*"],
       maintainers: ["Jason Clark"],
       licenses: ["Apache-2.0"],
       links: %{"GitHub" => "https://github.com/mithereal/ex_dbmigrate"}
