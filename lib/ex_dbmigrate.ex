@@ -5,6 +5,8 @@ defmodule ExDbmigrate do
 
   @repo ExDbmigrate.Config.repo()
 
+  import Exflect
+
   @doc """
   List the foreign keys for specified table.
 
@@ -56,11 +58,10 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name='#{table}';
   ## Examples
 
       iex> ExDbmigrate.migration()
-      ["mix phx.gen.schema CatalogMetas catalog_metass key:string data:string product_id:integer inserted_at:naive_datetime updated_at:naive_datetime",
-        "mix phx.gen.schema CatalogVideosToProduct catalog_videos_to_products product_id:integer video_id:integer",
-        "mix phx.gen.schema CatalogProducts catalog_productss name:string inserted_at:naive_datetime updated_at:naive_datetime",
-        "mix phx.gen.schema CatalogVideos catalog_videoss path:string inserted_at:naive_datetime updated_at:naive_datetime"
-      ]
+      ["mix phx.gen.migration CatalogMetas CatalogMeta catalog_metas key:string data:string product_id:uuid",
+      "mix phx.gen.migration CatalogVideosToProducts CatalogVideosToProduct catalog_videos_to_product product_id:uuid video_id:uuid",
+      "mix phx.gen.migration CatalogProducts CatalogProduct catalog_products name:string",
+      "mix phx.gen.migration CatalogVideos CatalogVideo catalog_videos path:string"]
 
   """
   def migration() do
@@ -78,11 +79,10 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name='#{table}';
   ## Examples
 
       iex> ExDbmigrate.migration_relations()
-      ["mix phx.gen.schema CatalogMetasRelations catalog_metasrelations product_id:references:catalog_products",
-       "mix phx.gen.schema CatalogVideosToProductRelations catalog_videos_to_productrelations product_id:references:catalog_products video_id:references:catalog_videos",
-       "mix phx.gen.schema CatalogProductsRelations catalog_productsrelations ",
-       "mix phx.gen.schema CatalogVideosRelations catalog_videosrelations "
-      ]
+      ["mix phx.gen.schema CatalogMetas CatalogMeta catalog_metas product_id:references:catalog_products",
+      "mix phx.gen.schema CatalogVideosToProducts CatalogVideosToProduct catalog_videos_to_product product_id:references:catalog_products video_id:references:catalog_videos",
+      "mix phx.gen.schema CatalogProducts CatalogProduct catalog_products ",
+      "mix phx.gen.schema CatalogVideos CatalogVideo catalog_videos "]
 
   """
   def migration_relations() do
@@ -100,11 +100,10 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name='#{table}';
   ## Examples
 
       iex> ExDbmigrate.schema()
-      ["mix phx.gen.schema CatalogMetas catalog_metass key:string data:string product_id:integer inserted_at:naive_datetime updated_at:naive_datetime --no-migration",
-       "mix phx.gen.schema CatalogVideosToProduct catalog_videos_to_products product_id:integer video_id:integer --no-migration",
-       "mix phx.gen.schema CatalogProducts catalog_productss name:string inserted_at:naive_datetime updated_at:naive_datetime --no-migration",
-       "mix phx.gen.schema CatalogVideos catalog_videoss path:string inserted_at:naive_datetime updated_at:naive_datetime --no-migration"
-      ]
+      ["mix phx.gen.schema CatalogMetas CatalogMeta catalog_metas key:string data:string product_id:integer --no-migration",
+      "mix phx.gen.schema CatalogVideosToProducts CatalogVideosToProduct catalog_videos_to_product product_id:integer video_id:integer --no-migration",
+      "mix phx.gen.schema CatalogProducts CatalogProduct catalog_products name:string --no-migration",
+      "mix phx.gen.schema CatalogVideos CatalogVideo catalog_videos path:string --no-migration"]
 
   """
   def schema() do
@@ -122,10 +121,10 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name='#{table}';
   ## Examples
 
       iex> ExDbmigrate.html()
-      ["mix phx.gen.html CatalogMetas catalog_metass key:string data:string product_id:integer inserted_at:naive_datetime updated_at:naive_datetime",
-       "mix phx.gen.html CatalogVideosToProduct catalog_videos_to_products product_id:integer video_id:integer",
-       "mix phx.gen.html CatalogProducts catalog_productss name:string inserted_at:naive_datetime updated_at:naive_datetime",
-       "mix phx.gen.html CatalogVideos catalog_videoss path:string inserted_at:naive_datetime updated_at:naive_datetime"
+      ["mix phx.gen.html CatalogMetas CatalogMeta catalog_metas key:string data:string product_id:integer",
+       "mix phx.gen.html CatalogVideosToProducts CatalogVideosToProduct catalog_videos_to_product product_id:integer video_id:integer",
+       "mix phx.gen.html CatalogProducts CatalogProduct catalog_products name:string",
+       "mix phx.gen.html CatalogVideos CatalogVideo catalog_videos path:string"
       ]
 
   """
@@ -144,11 +143,10 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name='#{table}';
   ## Examples
 
       iex> ExDbmigrate.json()
-      ["mix phx.gen.json CatalogMetas catalog_metass key:string data:string product_id:integer inserted_at:naive_datetime updated_at:naive_datetime",
-       "mix phx.gen.json CatalogVideosToProduct catalog_videos_to_products product_id:integer video_id:integer",
-       "mix phx.gen.json CatalogProducts catalog_productss name:string inserted_at:naive_datetime updated_at:naive_datetime",
-       "mix phx.gen.json CatalogVideos catalog_videoss path:string inserted_at:naive_datetime updated_at:naive_datetime"
-      ]
+      ["mix phx.gen.json CatalogMetas CatalogMeta catalog_metas key:string data:string product_id:integer",
+      "mix phx.gen.json CatalogVideosToProducts CatalogVideosToProduct catalog_videos_to_product product_id:integer video_id:integer",
+      "mix phx.gen.json CatalogProducts CatalogProduct catalog_products name:string",
+      "mix phx.gen.json CatalogVideos CatalogVideo catalog_videos path:string"]
 
   """
   def json() do
@@ -166,11 +164,10 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name='#{table}';
   ## Examples
 
       iex> ExDbmigrate.live()
-      ["mix phx.gen.live CatalogMetas catalog_metass key:string data:string product_id:integer inserted_at:naive_datetime updated_at:naive_datetime",
-       "mix phx.gen.live CatalogVideosToProduct catalog_videos_to_products product_id:integer video_id:integer",
-       "mix phx.gen.live CatalogProducts catalog_productss name:string inserted_at:naive_datetime updated_at:naive_datetime",
-       "mix phx.gen.live CatalogVideos catalog_videoss path:string inserted_at:naive_datetime updated_at:naive_datetime"
-      ]
+      ["mix phx.gen.live CatalogMetas CatalogMeta catalog_metas key:string data:string product_id:integer",
+      "mix phx.gen.live CatalogVideosToProducts CatalogVideosToProduct catalog_videos_to_product product_id:integer video_id:integer",
+      "mix phx.gen.live CatalogProducts CatalogProduct catalog_products name:string",
+      "mix phx.gen.live CatalogVideos CatalogVideo catalog_videos path:string"]
 
   """
   def live() do
@@ -199,87 +196,87 @@ WHERE table_schema = 'public'
   end
 
   def generate_jsons_command(data, [migration_name]) do
-    migration_string =
-      data.rows
-      |> Enum.map(fn [id, _is_null, type, _position, _max_length] ->
-        unless id == "id" do
-          type = type_select(type)
-          "#{id}:#{type}"
-        end
-      end)
-      |> Enum.join(" ")
-      |> String.trim()
+    migration_string = migration_string(data)
 
-    migration_module =
-      String.split(migration_name, "_")
-      |> Enum.map(fn x -> String.capitalize(x) end)
-      |> Enum.join("")
-      |> String.trim()
+    migration_module = migration_module(migration_name)
 
-    "mix phx.gen.json #{migration_module} #{String.downcase(migration_name) <> "s"} #{migration_string}"
+    table = table_name(migration_name)
+
+    module_name = migration_module |> singularize()
+
+    module = migration_module |> pluralize()
+
+    "mix phx.gen.json #{module} #{module_name} #{table} #{migration_string}"
   end
 
   def generate_lives_command(data, [migration_name]) do
-    migration_string =
-      data.rows
-      |> Enum.map(fn [id, _is_null, type, _position, _max_length] ->
-        unless id == "id" do
-          type = type_select(type)
-          "#{id}:#{type}"
-        end
-      end)
-      |> Enum.join(" ")
-      |> String.trim()
+    migration_string = migration_string(data)
 
-    migration_module =
-      String.split(migration_name, "_")
-      |> Enum.map(fn x -> String.capitalize(x) end)
-      |> Enum.join("")
-      |> String.trim()
+    migration_module = migration_module(migration_name)
 
-    "mix phx.gen.live #{migration_module} #{String.downcase(migration_name) <> "s"} #{migration_string}"
+    table = table_name(migration_name)
+
+    module_name = migration_module |> singularize()
+
+    module = migration_module |> pluralize()
+
+    "mix phx.gen.live #{module} #{module_name} #{table} #{migration_string}"
+  end
+
+  def migration_module(data) do
+    String.split(data, "_")
+    |> Enum.map(fn x -> String.capitalize(x) end)
+    |> Enum.join("")
+    |> String.trim()
+  end
+
+  def migration_string(data) do
+    data.rows
+    |> Enum.map(fn [id, _is_null, type, _position, _max_length] ->
+      unless id == "id" || id == "inserted_at" || id == "updated_at" do
+        type = type_select(type)
+        "#{id}:#{type}"
+      end
+    end)
+    |> Enum.join(" ")
+    |> String.trim()
+  end
+
+  def table_name(migration_name) do
+    migration_name
+
+    String.split(migration_name, "_")
+    |> Enum.map(fn x -> String.downcase(x) end)
+    |> Enum.join("_")
+    |> String.trim()
   end
 
   def generate_htmls_command(data, [migration_name]) do
-    migration_string =
-      data.rows
-      |> Enum.map(fn [id, _is_null, type, _position, _max_length] ->
-        unless id == "id" do
-          type = type_select(type)
-          "#{id}:#{type}"
-        end
-      end)
-      |> Enum.join(" ")
-      |> String.trim()
+    migration_string = migration_string(data)
 
-    migration_module =
-      String.split(migration_name, "_")
-      |> Enum.map(fn x -> String.capitalize(x) end)
-      |> Enum.join("")
-      |> String.trim()
+    migration_module = migration_module(migration_name)
 
-    "mix phx.gen.html #{migration_module} #{String.downcase(migration_name) <> "s"} #{migration_string}"
+    table = table_name(migration_name)
+
+    module_name = migration_module |> singularize()
+
+    module = migration_module |> pluralize()
+
+    "mix phx.gen.html #{module} #{module_name} #{table} #{migration_string}"
   end
 
   def generate_migration_command(data, [migration_name]) do
-    migration_string =
-      data.rows
-      |> Enum.map(fn [id, _is_null, type, _position, _max_length] ->
-        unless id == "id" do
-          type = type_select(type)
-          "#{id}:#{type}"
-        end
-      end)
-      |> Enum.join(" ")
-      |> String.trim()
+    migration_string = migration_string(data)
 
-    migration_module =
-      String.split(migration_name, "_")
-      |> Enum.map(fn x -> String.capitalize(x) end)
-      |> Enum.join("")
-      |> String.trim()
+    migration_module = migration_module(migration_name)
 
-    "mix phx.gen.schema #{migration_module} #{String.downcase(migration_name) <> "s"} #{migration_string}"
+    table = table_name(migration_name)
+
+    module_name = migration_module |> singularize()
+
+    module = migration_module |> pluralize()
+
+    "mix phx.gen.migration #{module} #{module_name} #{table} #{migration_string}"
   end
 
   def generate_migration_relations_command(fk_data, [migration_name]) do
@@ -291,17 +288,19 @@ WHERE table_schema = 'public'
       |> Enum.join(" ")
       |> String.trim()
 
-    migration_module =
-      String.split(migration_name, "_")
-      |> Enum.map(fn x -> String.capitalize(x) end)
-      |> Enum.join("")
-      |> String.trim()
+    migration_module = migration_module(migration_name)
+
+    table = table_name(migration_name)
+
+    module_name = migration_module |> singularize()
+
+    module = migration_module |> pluralize()
 
     migration_module = migration_module <> "Relations"
 
     migration_name = String.downcase(migration_name <> "relations")
 
-    "mix phx.gen.schema #{migration_module} #{migration_name} #{migration_string}"
+    "mix phx.gen.schema #{module} #{module_name} #{table} #{migration_string}"
   end
 
   def generate_schema_relations_command(fk_data, [migration_name]) do
@@ -313,37 +312,33 @@ WHERE table_schema = 'public'
       |> Enum.join(" ")
       |> String.trim()
 
-    migration_module =
-      String.split(migration_name, "_")
-      |> Enum.map(fn x -> String.capitalize(x) end)
-      |> Enum.join("")
-      |> String.trim()
+    migration_module = migration_module(migration_name)
+
+    table = table_name(migration_name)
+
+    module_name = migration_module |> singularize()
+
+    module = migration_module |> pluralize()
 
     migration_module = migration_module <> "Relations"
 
-    migration_name = String.downcase(migration_name <> "relations")
+    module_name = String.downcase(module_name <> "relations")
 
-    "mix phx.gen.schema #{migration_module} #{migration_name} #{migration_string}"
+    "mix phx.gen.schema #{module} #{module_name} #{table} #{migration_string}"
   end
 
   def generate_schemas_command(data, [migration_name]) do
-    migration_string =
-      data.rows
-      |> Enum.map(fn [id, _is_null, type, _position, _max_length] ->
-        unless id == "id" do
-          type = type_select(type)
-          "#{id}:#{type}"
-        end
-      end)
-      |> Enum.join(" ")
-      |> String.trim()
+    migration_string = migration_string(data)
 
-    migration_module =
-      String.split(migration_name, "_")
-      |> Enum.map(fn x -> String.capitalize(x) end)
-      |> Enum.join("")
+    migration_module = migration_module(migration_name)
 
-    "mix phx.gen.schema #{migration_module} #{String.downcase(migration_name) <> "s"} #{migration_string} --no-migration"
+    table = table_name(migration_name)
+
+    module_name = migration_module |> singularize()
+
+    module = migration_module |> pluralize()
+
+    "mix phx.gen.schema #{module} #{module_name} #{table} #{migration_string} --no-migration"
   end
 
   def type_select(t) do
@@ -354,6 +349,7 @@ WHERE table_schema = 'public'
       "USER-DEFINED" -> "map"
       "jsonb" -> "map"
       "ARRAY" -> "array:string"
+      "any" -> "string"
       nil -> "string"
       data -> data
     end

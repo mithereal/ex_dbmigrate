@@ -1,6 +1,6 @@
 defmodule ExDbmigrate.MixProject do
   use Mix.Project
-  @version "1.1.2"
+  @version "1.1.3"
   @source_url "https://github.com/mithereal/ExDbmigrate"
 
   def project do
@@ -74,7 +74,8 @@ defmodule ExDbmigrate.MixProject do
       {:myxql, ">= 0.0.0"},
       {:ecto, "~> 3.5"},
       {:ecto_sql, "~> 3.5"},
-      {:phoenix, "~> 1.7"}
+      {:phoenix, "~> 1.7"},
+      {:exflect, "1.0.0"}
     ]
   end
 end
