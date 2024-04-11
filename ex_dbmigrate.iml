@@ -59,6 +59,7 @@
       <excludeFolder url="file://$MODULE_DIR$/_build/test/lib/telemetry" />
       <excludeFolder url="file://$MODULE_DIR$/_build/test/lib/websock" />
       <excludeFolder url="file://$MODULE_DIR$/_build/test/lib/websock_adapter" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/exflect" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -122,5 +123,8 @@
     <orderEntry type="library" name="bandit" level="project" />
     <orderEntry type="library" name="geo" level="project" />
     <orderEntry type="library" name="binpp" level="project" />
+    <orderEntry type="library" name="exflect" level="project" />
+    <orderEntry type="library" name="inflex" level="project" />
+    <orderEntry type="library" name="httpoison" level="project" />
   </component>
 </module>

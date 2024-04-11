@@ -11,8 +11,6 @@ defmodule Mix.Tasks.ExDbmigrate.Gen.Live do
     Mix.shell().info("ExDbmigrate v#{Application.spec(:ex_dbmigrate, :vsn)}")
 
     ExDbmigrate.live()
-    |> Enum.map(fn x ->
-      IO.inspect(x)
-    end)
+    |> Enum.join(", ")
   end
 end

@@ -11,9 +11,7 @@ defmodule Mix.Tasks.ExDbmigrate.Gen.Relation do
     Mix.shell().info("ExDbmigrate v#{Application.spec(:ex_dbmigrate, :vsn)}")
 
     ExDbmigrate.migration_relations()
-    |> Enum.map(fn x ->
-      IO.inspect(x)
-    end)
+    |> Enum.join(", ")
   end
 
   def generate(args) do
