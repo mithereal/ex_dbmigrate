@@ -58,11 +58,10 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name='#{table}';
   ## Examples
 
       iex> ExDbmigrate.migration()
-      ["mix phx.gen.migration CatalogMetas CatalogMeta catalog_metas key:string data:string product_id:integer",
-       "mix phx.gen.migration CatalogVideosToProducts CatalogVideosToProduct catalog_videos_to_product product_id:integer video_id:integer",
-       "mix phx.gen.migration CatalogProducts CatalogProduct catalog_products name:string",
-       "mix phx.gen.migration CatalogVideos CatalogVideo catalog_videos path:string"
-      ]
+      ["mix phx.gen.migration CatalogMetas CatalogMeta catalog_metas key:string data:string product_id:uuid",
+      "mix phx.gen.migration CatalogVideosToProducts CatalogVideosToProduct catalog_videos_to_product product_id:uuid video_id:uuid",
+      "mix phx.gen.migration CatalogProducts CatalogProduct catalog_products name:string",
+      "mix phx.gen.migration CatalogVideos CatalogVideo catalog_videos path:string"]
 
   """
   def migration() do
@@ -142,7 +141,6 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name='#{table}';
   Generate schema from config.
 
   ## Examples
-
 
       iex> ExDbmigrate.json()
       ["mix phx.gen.json CatalogMetas CatalogMeta catalog_metas key:string data:string product_id:integer",
@@ -235,7 +233,7 @@ WHERE table_schema = 'public'
   def migration_string(data) do
     data.rows
     |> Enum.map(fn [id, _is_null, type, _position, _max_length] ->
-      unless id == "id" || id == "inserted_at" || id == "updated_at" || id == "deleted_at" do
+      unless id == "id" || id == "inserted_at" || id == "updated_at" do
         type = type_select(type)
         "#{id}:#{type}"
       end
