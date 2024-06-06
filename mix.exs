@@ -75,7 +75,8 @@ defmodule ExDbmigrate.MixProject do
       {:ecto, "~> 3.5"},
       {:ecto_sql, "~> 3.5"},
       {:phoenix, "~> 1.7"},
-      {:exflect, "1.0.0"}
+      {:exflect, "1.0.0"},
+      {:excoveralls, "~> 0.14", only: [:test, :dev]}
     ]
   end
 end

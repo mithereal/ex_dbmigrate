@@ -235,7 +235,7 @@ WHERE table_schema = 'public'
   def migration_string(data) do
     data.rows
     |> Enum.map(fn [id, _is_null, type, _position, _max_length] ->
-      unless id == "id" || id == "inserted_at" || id == "updated_at" || id == "deleted_at"do
+      unless id == "id" || id == "inserted_at" || id == "updated_at" || id == "deleted_at" do
         type = type_select(type)
         "#{id}:#{type}"
       end

@@ -1,0 +1,23 @@
+name: "Increment Product Version"
+on:
+  workflow_dispatch:
+
+  push:
+    branches:
+      - master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Bump version and push tag
+        uses: data-twister/github-tag-action-elixir@v1.64.0
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          WITH_V: true
