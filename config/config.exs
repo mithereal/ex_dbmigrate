@@ -26,7 +26,5 @@ import Config
 # here (which is why it is important to import them last).
 #
 #     import_config "#{Mix.env()}.exs"
-
-config :ex_dbmigrate, :ecto_repos, [ExDbmigrate.Repo]
-
+config :ex_dbmigrate, ecto_repos: [ExDbmigrate.Repo]
 import_config "#{Mix.env()}.exs"

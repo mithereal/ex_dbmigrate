@@ -30,8 +30,21 @@ def deps do
 end
 ```
 
+## Configuration
+```elixir
+config :ex_dbmigrate, ExDbmigrate.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  username: "postgres",
+  password: "postgres",
+  database: "postgres",
+  hostname: "localhost",
+  pool_size: 10,
+  primary_key_type: :uuid
+#   port: 5543
+```
 ## Usage: 
 ```bash
+mix ExDbmigrate.Gen.Module
 mix ExDbmigrate.Gen.Migration
 mix ExDbmigrate.Gen.Relation
 mix ExDbmigrate.Gen.Schema

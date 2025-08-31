@@ -2,8 +2,8 @@ defmodule ExDbmigrate do
   @moduledoc """
   Documentation for `ExDbmigrate`.
   """
-
-  @repo ExDbmigrate.Config.repo()
+  @repo ExDbmigrate.Repo
+  @ignore ["information_schema", "pg_catalog"]
 
   import Exflect
 
@@ -57,15 +57,15 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name='#{table}';
 
   ## Examples
 
-      iex> ExDbmigrate.migration()
+      iex> ExDbmigrate.migration("public")
       ["mix phx.gen.migration CatalogMetas CatalogMeta catalog_metas key:string data:string product_id:uuid",
       "mix phx.gen.migration CatalogVideosToProducts CatalogVideosToProduct catalog_videos_to_product product_id:uuid video_id:uuid",
       "mix phx.gen.migration CatalogProducts CatalogProduct catalog_products name:string",
       "mix phx.gen.migration CatalogVideos CatalogVideo catalog_videos path:string"]
 
   """
-  def migration() do
-    results = fetch_results()
+  def migration(schema \\ "public") do
+    results = fetch_results(schema)
 
     Enum.map(results.rows, fn r ->
       fetch_table_data(r)
@@ -79,14 +79,14 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name='#{table}';
   ## Examples
 
       iex> ExDbmigrate.migration_relations()
-      ["mix phx.gen.schema CatalogMetas CatalogMeta catalog_metas product_id:references:catalog_products",
-      "mix phx.gen.schema CatalogVideosToProducts CatalogVideosToProduct catalog_videos_to_product product_id:references:catalog_products video_id:references:catalog_videos",
-      "mix phx.gen.schema CatalogProducts CatalogProduct catalog_products ",
-      "mix phx.gen.schema CatalogVideos CatalogVideo catalog_videos "]
+      ["mix phx.gen.schema CatalogMetas.CatalogMeta catalog_metas product_id:references:catalog_products",
+      "mix phx.gen.schema CatalogVideosToProducts.CatalogVideosToProduct catalog_videos_to_product product_id:references:catalog_products video_id:references:catalog_videos",
+      "mix phx.gen.schema CatalogProducts.CatalogProduct catalog_products ",
+      "mix phx.gen.schema CatalogVideos.CatalogVideo catalog_videos "]
 
   """
-  def migration_relations() do
-    results = fetch_results()
+  def migration_relations(schema \\ "public") do
+    results = fetch_results(schema)
 
     Enum.map(results.rows, fn r ->
       list_foreign_keys(r)
@@ -100,14 +100,14 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name='#{table}';
   ## Examples
 
       iex> ExDbmigrate.schema()
-      ["mix phx.gen.schema CatalogMetas CatalogMeta catalog_metas key:string data:string product_id:integer --no-migration",
-      "mix phx.gen.schema CatalogVideosToProducts CatalogVideosToProduct catalog_videos_to_product product_id:integer video_id:integer --no-migration",
-      "mix phx.gen.schema CatalogProducts CatalogProduct catalog_products name:string --no-migration",
-      "mix phx.gen.schema CatalogVideos CatalogVideo catalog_videos path:string --no-migration"]
+      ["mix phx.gen.schema CatalogMetas.CatalogMeta catalog_metas key:string data:string product_id:uuid --no-migration",
+      "mix phx.gen.schema CatalogVideosToProducts.CatalogVideosToProduct catalog_videos_to_product product_id:uuid video_id:uuid --no-migration",
+      "mix phx.gen.schema CatalogProducts.CatalogProduct catalog_products name:string --no-migration",
+      "mix phx.gen.schema CatalogVideos.CatalogVideo catalog_videos path:string --no-migration"]
 
   """
-  def schema() do
-    results = fetch_results()
+  def schema(schema \\ "public") do
+    results = fetch_results(schema)
 
     Enum.map(results.rows, fn r ->
       fetch_table_data(r)
@@ -121,15 +121,15 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name='#{table}';
   ## Examples
 
       iex> ExDbmigrate.html()
-      ["mix phx.gen.html CatalogMetas CatalogMeta catalog_metas key:string data:string product_id:integer",
-       "mix phx.gen.html CatalogVideosToProducts CatalogVideosToProduct catalog_videos_to_product product_id:integer video_id:integer",
+      ["mix phx.gen.html CatalogMetas CatalogMeta catalog_metas key:string data:string product_id:uuid",
+       "mix phx.gen.html CatalogVideosToProducts CatalogVideosToProduct catalog_videos_to_product product_id:uuid video_id:uuid",
        "mix phx.gen.html CatalogProducts CatalogProduct catalog_products name:string",
        "mix phx.gen.html CatalogVideos CatalogVideo catalog_videos path:string"
       ]
 
   """
-  def html() do
-    results = fetch_results()
+  def html(schema \\ "public") do
+    results = fetch_results(schema)
 
     Enum.map(results.rows, fn r ->
       fetch_table_data(r)
@@ -143,14 +143,14 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name='#{table}';
   ## Examples
 
       iex> ExDbmigrate.json()
-      ["mix phx.gen.json CatalogMetas CatalogMeta catalog_metas key:string data:string product_id:integer",
-      "mix phx.gen.json CatalogVideosToProducts CatalogVideosToProduct catalog_videos_to_product product_id:integer video_id:integer",
+      ["mix phx.gen.json CatalogMetas CatalogMeta catalog_metas key:string data:string product_id:uuid",
+      "mix phx.gen.json CatalogVideosToProducts CatalogVideosToProduct catalog_videos_to_product product_id:uuid video_id:uuid",
       "mix phx.gen.json CatalogProducts CatalogProduct catalog_products name:string",
       "mix phx.gen.json CatalogVideos CatalogVideo catalog_videos path:string"]
 
   """
-  def json() do
-    results = fetch_results()
+  def json(schema \\ "public") do
+    results = fetch_results(schema)
 
     Enum.map(results.rows, fn r ->
       fetch_table_data(r)
@@ -164,14 +164,14 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name='#{table}';
   ## Examples
 
       iex> ExDbmigrate.live()
-      ["mix phx.gen.live CatalogMetas CatalogMeta catalog_metas key:string data:string product_id:integer",
-      "mix phx.gen.live CatalogVideosToProducts CatalogVideosToProduct catalog_videos_to_product product_id:integer video_id:integer",
+      ["mix phx.gen.live CatalogMetas CatalogMeta catalog_metas key:string data:string product_id:uuid",
+      "mix phx.gen.live CatalogVideosToProducts CatalogVideosToProduct catalog_videos_to_product product_id:uuid video_id:uuid",
       "mix phx.gen.live CatalogProducts CatalogProduct catalog_products name:string",
       "mix phx.gen.live CatalogVideos CatalogVideo catalog_videos path:string"]
 
   """
-  def live() do
-    results = fetch_results()
+  def live(schema \\ "public") do
+    results = fetch_results(schema)
 
     Enum.map(results.rows, fn r ->
       fetch_table_data(r)
@@ -179,17 +179,24 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name='#{table}';
     end)
   end
 
-  def fetch_results() do
+  def fetch_table_schemas(ignore \\ @ignore) do
+    query = "SELECT schema_name
+      FROM information_schema.schemata;"
+
+    Ecto.Adapters.SQL.query!(@repo, query, []) |> Enum.reject(fn x -> Enum.member?(ignore, x) end)
+  end
+
+  def fetch_results(schema \\ "public") do
     query =
-      "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' and table_name != 'schema_migrations';"
+      "SELECT table_name FROM information_schema.tables WHERE table_schema = '#{schema}' and table_name != 'schema_migrations';"
 
     Ecto.Adapters.SQL.query!(@repo, query, [])
   end
 
-  def fetch_table_data(r) do
+  def fetch_table_data(r, schema \\ "public") do
     query =
       "SELECT column_name, is_nullable, data_type, ordinal_position, character_maximum_length FROM information_schema.columns
-WHERE table_schema = 'public'
+WHERE table_schema = '#{schema}'
   AND table_name   = '#{r}'"
 
     Ecto.Adapters.SQL.query!(@repo, query, [])
@@ -300,7 +307,7 @@ WHERE table_schema = 'public'
 
     migration_name = String.downcase(migration_name <> "relations")
 
-    "mix phx.gen.schema #{module} #{module_name} #{table} #{migration_string}"
+    "mix phx.gen.schema #{module}.#{module_name} #{table} #{migration_string}"
   end
 
   def generate_schema_relations_command(fk_data, [migration_name]) do
@@ -324,7 +331,7 @@ WHERE table_schema = 'public'
 
     module_name = String.downcase(module_name <> "relations")
 
-    "mix phx.gen.schema #{module} #{module_name} #{table} #{migration_string}"
+    "mix phx.gen.schema #{module}.#{module_name} #{table} #{migration_string}"
   end
 
   def generate_schemas_command(data, [migration_name]) do
@@ -338,7 +345,7 @@ WHERE table_schema = 'public'
 
     module = migration_module |> pluralize()
 
-    "mix phx.gen.schema #{module} #{module_name} #{table} #{migration_string} --no-migration"
+    "mix phx.gen.schema #{module}.#{module_name} #{table} #{migration_string} --no-migration"
   end
 
   def type_select(t) do

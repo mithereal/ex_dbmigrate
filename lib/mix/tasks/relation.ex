@@ -4,19 +4,26 @@ defmodule Mix.Tasks.ExDbmigrate.Gen.Relation do
   @moduledoc """
     After configuring your default ecto repo in `:ecto_repos`
     Run mix ExDbmigrate to generates a migration.
+    Avail flags are --schema schema_name
   """
 
-  def run(_args) do
+  def run(args) do
     {:ok, _} = Application.ensure_all_started(:ex_dbmigrate)
     Mix.shell().info("ExDbmigrate v#{Application.spec(:ex_dbmigrate, :vsn)}")
 
-    ExDbmigrate.migration_relations()
+    data =
+      case Keyword.fetch(args, :schema) do
+        {:ok, name} -> ExDbmigrate.migration_relations(name)
+        :error -> ExDbmigrate.migration_relations()
+      end
+
+    data
     |> Enum.join(", ")
   end
 
   def generate(args) do
     source = Path.join(Application.app_dir(:ex_dbmigrate, "/priv/"), "migration_relations.exs")
-    name = Keyword.fetch(args, :name)
+    {:ok, name} = Keyword.fetch(args, :name)
 
     target = Path.join(File.cwd!(), "/priv/repo/migrations/#{timestamp()}_#{name}.exs")
 

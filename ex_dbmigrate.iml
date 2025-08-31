@@ -126,5 +126,10 @@
     <orderEntry type="library" name="exflect" level="project" />
     <orderEntry type="library" name="inflex" level="project" />
     <orderEntry type="library" name="httpoison" level="project" />
+    <orderEntry type="library" name="bypass" level="project" />
+    <orderEntry type="library" name="meck" level="project" />
+    <orderEntry type="library" name="mock" level="project" />
+    <orderEntry type="library" name="sax_map" level="project" />
+    <orderEntry type="library" name="saxy" level="project" />
   </component>
 </module>
