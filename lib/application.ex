@@ -5,14 +5,10 @@ defmodule ExDbmigrate.Application do
 
   use Application
 
-  alias ExDbmigrate.Config
-
   @impl true
   def start(_type, args) do
-    repo = Config.repo()
-
     children = [
-      {repo, args},
+      {ExDbmigrate.Repo, args},
       # Starts a worker by calling: ExDbmigrate.Worker.start_link(arg)
       {Registry, keys: :unique, name: :tables},
       {ExDbmigrate.Table.Supervisor, args}

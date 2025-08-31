@@ -43,7 +43,7 @@ defmodule ExDbmigrate.Table.Server do
   def init(init_arg) do
     data = ExDbmigrate.list_foreign_keys(init_arg)
 
-    ref_type = ExDbmigrate.Config.key_type()
+    ref_type = key_type()
 
     timestamp_fields =
       Application.get_env(:ex_dbmigrate, :timestamp_fields, [:updated_at, :inserted_at])
@@ -145,7 +145,7 @@ defmodule ExDbmigrate.Table.Server do
         _from,
         state
       ) do
-    ref_type = ExDbmigrate.Config.key_type()
+    ref_type = key_type()
 
     assoc_type =
       case Enum.count(state.links) do
@@ -166,7 +166,7 @@ defmodule ExDbmigrate.Table.Server do
       ) do
     link_data =
       Enum.map(data, fn x ->
-        ref_type = ExDbmigrate.Config.key_type()
+        ref_type = key_type()
 
         %{
           column_name: x.column_name,
@@ -242,5 +242,19 @@ defmodule ExDbmigrate.Table.Server do
   @impl true
   def handle_info(_msg, state) do
     {:noreply, state}
+  end
+
+  def key_type() do
+    case Application.get_env(:ex_dbmigrate, ExDbmigrate.Repo)[:primary_key_type] do
+      nil -> :integer
+      _ -> :binary_id
+    end
+  end
+
+  def key_type(:migration) do
+    case Application.get_env(:ex_dbmigrate, ExDbmigrate.Repo)[:primary_key_type] do
+      nil -> :integer
+      _ -> :uuid
+    end
   end
 end
