@@ -1,6 +1,6 @@
 defmodule ExDbmigrate.MixProject do
   use Mix.Project
-  @version "1.1.4"
+  @version "1.1.5"
   @source_url "https://github.com/mithereal/ExDbmigrate"
 
   def project do
