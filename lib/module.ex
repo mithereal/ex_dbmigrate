@@ -12,6 +12,7 @@ defmodule ExDbmigrate.Module do
   """
   def generate_modules(repo, opts \\ []) do
     tables = Repo.list_tables(repo)
+
     Enum.each(tables, fn table ->
       columns = Repo.get_columns(repo, table)
       module_code = build_module(table, columns)

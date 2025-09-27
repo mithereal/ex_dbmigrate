@@ -14,10 +14,12 @@ defmodule ExDbmigrate.Repo do
 
   defp list_tables(repo, schema_name \\ "public") do
     adapter = repo.__adapter__()
+
     query =
       case adapter do
         Ecto.Adapters.Postgres ->
           "SELECT tablename FROM pg_tables WHERE schemaname='#{schema_name}';"
+
         _ ->
           raise "Adapter not supported"
       end
@@ -25,12 +27,13 @@ defmodule ExDbmigrate.Repo do
     repo
     |> Ecto.Adapters.SQL.query!(query)
     |> case do
-         %{rows: rows} -> List.flatten(rows)
-       end
+      %{rows: rows} -> List.flatten(rows)
+    end
   end
 
   defp get_columns(repo, table) do
     adapter = repo.__adapter__()
+
     query =
       case adapter do
         Ecto.Adapters.Postgres ->
@@ -39,6 +42,7 @@ defmodule ExDbmigrate.Repo do
           FROM information_schema.columns
           WHERE table_name='#{table}';
           """
+
         _ ->
           raise "Adapter not supported"
       end
@@ -46,11 +50,11 @@ defmodule ExDbmigrate.Repo do
     repo
     |> Ecto.Adapters.SQL.query!(query)
     |> case do
-         %{columns: cols, rows: rows} ->
-           Enum.map(rows, fn row ->
-             Enum.zip(cols, row) |> Enum.into(%{})
-           end)
-       end
+      %{columns: cols, rows: rows} ->
+        Enum.map(rows, fn row ->
+          Enum.zip(cols, row) |> Enum.into(%{})
+        end)
+    end
   end
 end
 
