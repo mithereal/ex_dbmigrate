@@ -53,6 +53,14 @@ mix ExDbmigrate.Gen.Json
 mix ExDbmigrate.Gen.Live
 ```
 
+## Usage Inside iex: (/priv/json.txt will be created)
+```elixir
+iex> ExDbmigrate.json("public", :write, "json")
+```
+
+## Caveats: 
+* on some distributions the mix tasks fail with a tools error, however the iex version works.
+
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
 be found at <https://hexdocs.pm/ex_dbmigrate>.

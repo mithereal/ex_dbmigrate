@@ -64,13 +64,19 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name='#{table}';
       "mix phx.gen.migration CatalogVideos CatalogVideo catalog_videos path:string"]
 
   """
-  def migration(schema \\ "public") do
+  def migration(schema \\ "public", mode \\ :read, filename \\ "db_migrate") do
     results = fetch_results(schema)
 
-    Enum.map(results.rows, fn r ->
-      fetch_table_data(r)
-      |> generate_migration_command(r)
-    end)
+    map =
+      Enum.map(results.rows, fn r ->
+        fetch_table_data(r)
+        |> generate_migration_command(r)
+      end)
+
+    case mode do
+      :read -> map
+      :write -> map |> write_file(filename)
+    end
   end
 
   @doc """
@@ -85,13 +91,19 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name='#{table}';
       "mix phx.gen.schema CatalogVideos.CatalogVideo catalog_videos "]
 
   """
-  def migration_relations(schema \\ "public") do
+  def migration_relations(schema \\ "public", mode \\ :read, filename \\ "db_migrate") do
     results = fetch_results(schema)
 
-    Enum.map(results.rows, fn r ->
-      list_foreign_keys(r)
-      |> generate_migration_relations_command(r)
-    end)
+    map =
+      Enum.map(results.rows, fn r ->
+        list_foreign_keys(r)
+        |> generate_migration_relations_command(r)
+      end)
+
+    case mode do
+      :read -> map
+      :write -> map |> write_file(filename)
+    end
   end
 
   @doc """
@@ -106,13 +118,19 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name='#{table}';
       "mix phx.gen.schema CatalogVideos.CatalogVideo catalog_videos path:string --no-migration"]
 
   """
-  def schema(schema \\ "public") do
+  def schema(schema \\ "public", mode \\ :read, filename \\ "db_migrate") do
     results = fetch_results(schema)
 
-    Enum.map(results.rows, fn r ->
-      fetch_table_data(r)
-      |> generate_schemas_command(r)
-    end)
+    map =
+      Enum.map(results.rows, fn r ->
+        fetch_table_data(r)
+        |> generate_schemas_command(r)
+      end)
+
+    case mode do
+      :read -> map
+      :write -> map |> write_file(filename)
+    end
   end
 
   @doc """
@@ -128,13 +146,19 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name='#{table}';
       ]
 
   """
-  def html(schema \\ "public") do
+  def html(schema \\ "public", mode \\ :read, filename \\ "db_migrate") do
     results = fetch_results(schema)
 
-    Enum.map(results.rows, fn r ->
-      fetch_table_data(r)
-      |> generate_htmls_command(r)
-    end)
+    map =
+      Enum.map(results.rows, fn r ->
+        fetch_table_data(r)
+        |> generate_htmls_command(r)
+      end)
+
+    case mode do
+      :read -> map
+      :write -> map |> write_file(filename)
+    end
   end
 
   @doc """
@@ -149,13 +173,19 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name='#{table}';
       "mix phx.gen.json CatalogVideos CatalogVideo catalog_videos path:string"]
 
   """
-  def json(schema \\ "public") do
+  def json(schema \\ "public", mode \\ :read, filename \\ "db_migrate") do
     results = fetch_results(schema)
 
-    Enum.map(results.rows, fn r ->
-      fetch_table_data(r)
-      |> generate_jsons_command(r)
-    end)
+    map =
+      Enum.map(results.rows, fn r ->
+        fetch_table_data(r)
+        |> generate_jsons_command(r)
+      end)
+
+    case mode do
+      :read -> map
+      :write -> map |> write_file(filename)
+    end
   end
 
   @doc """
@@ -170,13 +200,19 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name='#{table}';
       "mix phx.gen.live CatalogVideos CatalogVideo catalog_videos path:string"]
 
   """
-  def live(schema \\ "public") do
+  def live(schema \\ "public", mode \\ :read, filename \\ "db_migrate") do
     results = fetch_results(schema)
 
-    Enum.map(results.rows, fn r ->
-      fetch_table_data(r)
-      |> generate_lives_command(r)
-    end)
+    map =
+      Enum.map(results.rows, fn r ->
+        fetch_table_data(r)
+        |> generate_lives_command(r)
+      end)
+
+    case mode do
+      :read -> map
+      :write -> map |> write_file(filename)
+    end
   end
 
   def fetch_table_schemas(ignore \\ @ignore) do
@@ -361,4 +397,18 @@ WHERE table_schema = '#{schema}'
       data -> data
     end
   end
+
+  def write_file(data, file \\ "db_migrate") do
+    target = Path.join(File.cwd!(), "/priv/#{timestamp()}_#{file}.txt")
+    data = Enum.join(data, "\n")
+    target |> File.write(data)
+  end
+
+  defp timestamp do
+    {{y, m, d}, {hh, mm, ss}} = :calendar.universal_time()
+    "#{y}#{pad(m)}#{pad(d)}#{pad(hh)}#{pad(mm)}#{pad(ss)}"
+  end
+
+  defp pad(i) when i < 10, do: <<?0, ?0 + i>>
+  defp pad(i), do: to_string(i)
 end

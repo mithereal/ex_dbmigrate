@@ -60,6 +60,11 @@
       <excludeFolder url="file://$MODULE_DIR$/_build/test/lib/websock" />
       <excludeFolder url="file://$MODULE_DIR$/_build/test/lib/websock_adapter" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/exflect" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/excoveralls" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/jason" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/test/lib/excoveralls" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/test/lib/exflect" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/test/lib/jason" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
