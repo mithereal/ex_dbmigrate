@@ -55,7 +55,7 @@ mix ExDbmigrate.Gen.Live
 
 ## Usage Inside iex: (/priv/json.txt will be created)
 ```elixir
-iex> ExDbmigrate.json("public", :write, "json")
+iex> ExDbmigrate.json("public", :write, "json.txt")
 ```
 
 ## Caveats: 

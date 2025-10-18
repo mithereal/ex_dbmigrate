@@ -399,9 +399,26 @@ WHERE table_schema = '#{schema}'
   end
 
   def write_file(data, file \\ "db_migrate") do
-    target = Path.join(File.cwd!(), "/priv/#{timestamp()}_#{file}.txt")
-    data = Enum.join(data, "\n")
-    target |> File.write(data)
+    target = String.split(file, "/")
+
+    if is_list(target) do
+      target = case Enum.count(target) do
+        1 ->
+          Path.join(File.cwd!(), "/priv/#{file}")
+
+        0 ->
+          Path.join(File.cwd!(), "/priv/db_migrate.txt")
+
+        _ ->
+          filename = "#{timestamp()}_#{List.last(target)}"
+          Path.join(File.cwd!(), "/priv/#{filename}")
+      end
+
+      data = Enum.join(data, "\n")
+      target |> File.write(data)
+    else
+      Path.join(File.cwd!(), "/priv/#{timestamp()}_#{file}") |> File.write(data)
+    end
   end
 
   defp timestamp do
