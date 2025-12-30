@@ -1,6 +1,6 @@
 defmodule ExDbmigrate.MixProject do
   use Mix.Project
-  @version "1.1.6"
+  @version "1.1.7"
   @source_url "https://github.com/mithereal/ExDbmigrate"
 
   def project do
@@ -17,7 +17,7 @@ defmodule ExDbmigrate.MixProject do
       name: "ex_dbmigrate",
       source_url: @source_url,
       test_coverage: [tool: ExCoveralls],
-      preferred_cli_env: [
+      cli: [
         coveralls: :test,
         "coveralls.detail": :test,
         "coveralls.post": :test,
@@ -30,13 +30,13 @@ defmodule ExDbmigrate.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger],
+      extra_applications: [:logger, :observer, :debugger, :runtime_tools, :wx],
       mod: {ExDbmigrate.Application, []}
     ]
   end
 
   defp description do
-    "Create Db Migrations from Pre-Existing Database."
+    "Create Migrations and Scaffolding from a Pre-Existing Database."
   end
 
   defp package do
@@ -77,14 +77,12 @@ defmodule ExDbmigrate.MixProject do
   defp deps do
     [
       {:ex_doc, ">= 0.0.0", only: :dev},
-      {:credo, "~> 0.9.1", only: [:dev, :test], runtime: false},
+      {:credo, ">= 0.0.0", only: [:dev, :test], runtime: false},
+      {:excoveralls, ">= 0.0.0", only: [:test, :dev]},
       {:postgrex, ">= 0.0.0"},
-      {:myxql, ">= 0.0.0"},
-      {:ecto, "~> 3.5"},
-      {:ecto_sql, "~> 3.5"},
-      {:phoenix, "~> 1.7"},
-      {:exflect, "1.0.0"},
-      {:excoveralls, "~> 0.14", only: [:test, :dev]}
+      {:ecto, ">= 0.0.0"},
+      {:ecto_sql, ">= 0.0.0"},
+      {:exflect, ">= 0.0.0"}
     ]
   end
 end

@@ -5,7 +5,7 @@
 [![Last Updated](https://img.shields.io/github/last-commit/mithereal/ex_dbmigrate.svg)](https://github.com/mithereal/ex_dbmigrate/commits/master)
 [![Build Status](https://circleci.com/gh/mithereal/ex_dbmigrate.svg?style=svg)](https://github.com/mithereal/ex_dbmigrate)
 
-**Generate phoenix schemas, html, json and live from existing database**
+**Generate ash resources, phoenix schemas, html, json and live from existing database**
 
 ## Installation
 
@@ -51,6 +51,7 @@ mix ExDbmigrate.Gen.Schema
 mix ExDbmigrate.Gen.Html
 mix ExDbmigrate.Gen.Json
 mix ExDbmigrate.Gen.Live
+mix ExDbmigrate.Gen.Resource
 ```
 
 ## Usage Inside iex: (/priv/json.txt will be created)

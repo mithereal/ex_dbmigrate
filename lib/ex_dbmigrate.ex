@@ -189,6 +189,36 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name='#{table}';
   end
 
   @doc """
+  Generate ash resource from schema.
+
+  ## Examples
+
+      iex> ExDbmigrate.resource()
+      ["mix ash.gen.resource Helpdesk.Support.Ticket \
+  --default-actions read \
+  --uuid-primary-key id \
+  --attribute subject:string:required:public \
+  --relationship belongs_to:representative:Helpdesk.Support.Representative \
+  --timestamps \
+  --extend postgres"]
+
+  """
+  def resource(schema \\ "public", mode \\ :read, filename \\ "db_migrate") do
+    results = fetch_results(schema)
+
+    map =
+      Enum.map(results.rows, fn [r] ->
+        application_table_data(r)
+        |> generate_resources_command(r)
+      end)
+
+    case mode do
+      :read -> map
+      :write -> map |> write_file(filename)
+    end
+  end
+
+  @doc """
   Generate schema from config.
 
   ## Examples
@@ -229,6 +259,10 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name='#{table}';
     Ecto.Adapters.SQL.query!(@repo, query, [])
   end
 
+  def application_table_data(name) do
+    ExDbmigrate.Table.Server.show(name)
+  end
+
   def fetch_table_data(r, schema \\ "public") do
     query =
       "SELECT column_name, is_nullable, data_type, ordinal_position, character_maximum_length FROM information_schema.columns
@@ -250,6 +284,28 @@ WHERE table_schema = '#{schema}'
     module = migration_module |> pluralize()
 
     "mix phx.gen.json #{module} #{module_name} #{table} #{migration_string}"
+  end
+
+  def generate_resources_command(data, table_name, extends \\ "postgres") do
+    name = migration_module(table_name) |> singularize()
+
+    attributes =
+      build_resource_attributes(data.schema)
+      |> Enum.map(fn x -> "--attribute #{x}" end)
+      |> Enum.join(" ")
+
+    relationships =
+      build_relationships(data.links)
+      |> Enum.map(fn x -> "--relationship #{x}" end)
+      |> Enum.join(" ")
+
+    "mix ash.gen.resource #{name} \
+        --default-actions read \
+        --uuid-primary-key id \
+        #{attributes} \
+        #{relationships} \
+        --timestamps \
+        --extend #{extends}"
   end
 
   def generate_lives_command(data, [migration_name]) do
@@ -275,14 +331,44 @@ WHERE table_schema = '#{schema}'
 
   def migration_string(data) do
     data.rows
+    |> build_attributes()
+    |> Enum.join(" ")
+    |> String.trim()
+  end
+
+  def build_relationships(data) do
+    data
+    |> Enum.map(fn %{
+                     column_name: column_name,
+                     references: %{
+                       ref_table: foreign_table_name,
+                       ref_column: foreign_column_name,
+                       type: type
+                     }
+                   } ->
+      relation_module_name = migration_module(foreign_table_name) |> singularize()
+      "#{type}:#{foreign_table_name}:#{relation_module_name}"
+    end)
+  end
+
+  def build_attributes(data) do
+    data
     |> Enum.map(fn [id, _is_null, type, _position, _max_length] ->
       unless id == "id" || id == "inserted_at" || id == "updated_at" do
         type = type_select(type)
         "#{id}:#{type}"
       end
     end)
-    |> Enum.join(" ")
-    |> String.trim()
+  end
+
+  def build_resource_attributes(data) do
+    data
+    |> Enum.map(fn {id, type} ->
+      unless id == "id" || id == "inserted_at" || id == "updated_at" do
+        type = type_select(type)
+        "#{id}:#{type}"
+      end
+    end)
   end
 
   def table_name(migration_name) do
@@ -402,17 +488,18 @@ WHERE table_schema = '#{schema}'
     target = String.split(file, "/")
 
     if is_list(target) do
-      target = case Enum.count(target) do
-        1 ->
-          Path.join(File.cwd!(), "/priv/#{file}")
+      target =
+        case Enum.count(target) do
+          1 ->
+            Path.join(File.cwd!(), "/priv/#{file}")
 
-        0 ->
-          Path.join(File.cwd!(), "/priv/db_migrate.txt")
+          0 ->
+            Path.join(File.cwd!(), "/priv/db_migrate.txt")
 
-        _ ->
-          filename = "#{timestamp()}_#{List.last(target)}"
-          Path.join(File.cwd!(), "/priv/#{filename}")
-      end
+          _ ->
+            filename = "#{timestamp()}_#{List.last(target)}"
+            Path.join(File.cwd!(), "/priv/#{filename}")
+        end
 
       data = Enum.join(data, "\n")
       target |> File.write(data)
