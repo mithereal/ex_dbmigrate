@@ -194,13 +194,10 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name='#{table}';
   ## Examples
 
       iex> ExDbmigrate.resource()
-      ["mix ash.gen.resource Helpdesk.Support.Ticket \
-  --default-actions read \
-  --uuid-primary-key id \
-  --attribute subject:string:required:public \
-  --relationship belongs_to:representative:Helpdesk.Support.Representative \
-  --timestamps \
-  --extend postgres"]
+      ["mix ash.gen.resource CatalogMeta --default-actions read --uuid-primary-key id --attribute key:string --attribute data:string --relationship integer:catalog_products:CatalogProduct --timestamps --extend postgres",
+              "mix ash.gen.resource CatalogVideosToProduct --default-actions read --uuid-primary-key id  --relationship integer:catalog_products:CatalogProduct --relationship integer:catalog_videos:CatalogVideo --timestamps --extend postgres",
+              "mix ash.gen.resource CatalogProduct --default-actions read --uuid-primary-key id --attribute name:string  --timestamps --extend postgres",
+              "mix ash.gen.resource CatalogVideo --default-actions read --uuid-primary-key id --attribute path:string  --timestamps --extend postgres"]
 
   """
   def resource(schema \\ "public", mode \\ :read, filename \\ "db_migrate") do
@@ -299,13 +296,7 @@ WHERE table_schema = '#{schema}'
       |> Enum.map(fn x -> "--relationship #{x}" end)
       |> Enum.join(" ")
 
-    "mix ash.gen.resource #{name} \
-        --default-actions read \
-        --uuid-primary-key id \
-        #{attributes} \
-        #{relationships} \
-        --timestamps \
-        --extend #{extends}"
+    "mix ash.gen.resource #{name} --default-actions read --uuid-primary-key id #{attributes} #{relationships} --timestamps --extend #{extends}"
   end
 
   def generate_lives_command(data, [migration_name]) do
